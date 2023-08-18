@@ -1,43 +1,58 @@
 import { useState } from 'react'
 import style from './dropDownMenu.module.scss'
+import downArrowIcon from '../../assets/images/downArrowIcon.svg'
 
-interface DropDownMenuProps {
+interface DropdownProps {
   options: string[]
+  defaultOption?: number
+  selectedOption: (n: number) => void
+  image?: string
+  customStyle?: React.CSSProperties
 }
 
-const DropDownMenu: React.FC<DropDownMenuProps> = ({ options }) => {
-  const [selectedOption, setSelectedOption] = useState<string | null>(null)
-  const [isDropDownOpen, setIsDropDownOpen] = useState<boolean>(false)
+const Dropdown: React.FC<DropdownProps> = ({
+  options,
+  image,
+  defaultOption,
+  selectedOption,
+  customStyle,
+}) => {
+  const [selected, setSelected] = useState<number | null>(null)
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
-  const handleOptionClick = (option: string) => {
-    setSelectedOption(option)
-    setIsDropDownOpen(false)
+  const handleOptionClick = (option: number) => {
+    setSelected(option)
+    selectedOption(option)
+    setIsDropdownOpen(false)
   }
 
-  const toggleDropDown = () => {
-    setIsDropDownOpen(!isDropDownOpen)
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen)
   }
 
   return (
-    <div className={style['dropdown-container']}>
-      <button onClick={toggleDropDown}>
-        <span>{selectedOption ? null : 'Click here'}</span>
-
-        {isDropDownOpen && (
-          <ul className={style['dropdown-menu']}>
-            {options.map((option) => (
-              <li key={option} onClick={() => handleOptionClick(option)}>
-                {option}
-              </li>
-            ))}
-          </ul>
-        )}
-        {selectedOption && (
-          <input type="text" value={selectedOption} readOnly />
-        )}
-      </button>
+    <div
+      className={style['dropdown-container']}
+      onClick={toggleDropdown}
+      style={customStyle}>
+      <span className={style['dropdown-label']}>
+        {selected ? options[selected] : options[defaultOption || 0]}
+      </span>
+      <img src={downArrowIcon} alt="downArrowIcon" />
+      {isDropdownOpen && (
+        <ul className={style['dropdown-menu']}>
+          {options.map((option, index) => (
+            <li key={option} onClick={() => handleOptionClick(index)}>
+              {option}
+            </li>
+          ))}
+        </ul>
+      )}
+      {image && (
+        <img src={`${image}`} alt="downArrowIcon" onClick={toggleDropdown} />
+      )}
     </div>
   )
 }
 
-export default DropDownMenu
+export default Dropdown
