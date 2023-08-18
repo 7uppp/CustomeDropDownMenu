@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import style from './dropDownMenu.module.scss'
-import downArrowIcon from '../../assets/images/downArrowIcon.svg'
+import downArrowIcon from './assets/images/downArrowIcon.svg'
 
 interface DropdownProps {
   options: string[]
